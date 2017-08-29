@@ -16,7 +16,8 @@ public class MainActivity extends AppCompatActivity {
     private RadioButton googleBtn;
     private Spinner spinnerFrom;
     private Spinner spinnerTo;
-    private YandexService yandexService;
+    private LanguageServices languageServices;
+    private String translateMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +27,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void getLanguages(View view) {
         googleBtn = (RadioButton) findViewById(R.id.radioGoogle);
-        googleBtn.setEnabled(false);
+        yandexBtn = (RadioButton) findViewById(R.id.radioYandX);
         spinnerFrom = (Spinner) findViewById(R.id.spinnerFromLang);
         spinnerTo = (Spinner) findViewById(R.id.spinnerToLang);
 
-        yandexService = new YandexService(spinnerFrom, spinnerTo, MainActivity.this);
-        yandexService.execute();
+        if (yandexBtn.isChecked()) {
+            translateMode = "yandex";
+        } else {
+            translateMode = "google";
+        }
+        googleBtn.setEnabled(false);
+
+        languageServices = new LanguageServices(spinnerFrom, spinnerTo, MainActivity.this, translateMode);
+        languageServices.execute();
     }
 
     public void doTranslate(View view) {
@@ -39,11 +47,11 @@ public class MainActivity extends AppCompatActivity {
         spinnerFrom = (Spinner) findViewById(R.id.spinnerFromLang);
         spinnerTo = (Spinner) findViewById(R.id.spinnerToLang);
 
-        inputLang = yandexService.getKeyFromValue(spinnerFrom.getSelectedItem()).toString();
-        outputLang = yandexService.getKeyFromValue(spinnerTo.getSelectedItem()).toString();
+        inputLang = languageServices.getKeyFromValue(spinnerFrom.getSelectedItem()).toString();
+        outputLang = languageServices.getKeyFromValue(spinnerTo.getSelectedItem()).toString();
         String dis = display.getText().toString();
 
-        YandexTranslate translate = new YandexTranslate(inputLang, outputLang, dis, display);
+        TranslationServices translate = new TranslationServices(inputLang, outputLang, dis, display, translateMode);
         translate.execute();
     }
 }

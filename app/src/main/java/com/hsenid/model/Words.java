@@ -1,4 +1,4 @@
-package com.hsenid.translater;
+package com.hsenid.model;
 
 /**
  * Created by Vidushka on 04/05/17.
